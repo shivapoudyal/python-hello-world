@@ -1,0 +1,124 @@
+Note:- Install 'Django' & 'Python' in VS Code for better coding support
+
+1) Start a new project in Django
+    sudo django-admin startproject anyprojectname
+
+2) Run the Project
+    python manage.py runserver
+
+3) Create an App (URL Handler)
+    python manage.py startapp anyappname  
+
+4) Create Static Folder into root dir
+    a) this folder is directly readable by visiting in urls (eg - localhost/yourproject/static/anystaticfile.txt)
+    b) for access static files, need to add STATIC DIRS block into "settings.py" file (yourprojectfolder/settings.py)
+    c) in static folder, mainly use to storing the assets (i.e, imgs, css, js)
+
+5) Create Template Folder into root dir 
+    a) it use for storing html templates
+    b) need to add template folder name into settings.py in TEMPLATE->DIRS block (eg.-> os.path.join(BASE_DIR, "templates"),)
+
+6) Include Pages
+    a) in python, it works with 'extends', eg of extending -> {% extends 'base.html' %}
+    b) put all the code into a 'base.html' page and define the blocks which part need to be dynamic or changable as per needed
+    c) use those blocks to other pages where 'base.html' is extended
+    d) block eg in 'base.html' page->  {% block egTitle %} {% endblock egTitle %}, {% block egBody %} {% endblock egBody %}
+    e) use these block wherever its required by extending 'base.html' eg-> {% block egTitle %} About {% endblock egTitle %}
+
+-------------------------------------------------- ADMIN & MODEL RELATED STUFFS -------------------------------------
+
+*makemigrations -> create the changes
+*migrate -> save & apply the changes
+
+Note:- for DB work, need to follow step no -> 3,4,5
+
+1) Login to admin
+    a) first it will throw an operational error.
+    b) need to run migrate command, so setup the login process -> 'python manage.py migrate'
+    c) after run above commands, now error will changed to username or password failed.
+    d) create user for login
+        i) 'python manage.py createsuperuse' (enter username and password, now login with created credentials)
+    
+2) How to change admin text
+    a) put below codes into project's "urls.py"
+        admin.site.site_header = "Shiva Admin"
+        admin.site.site_title = "Shiva Admin Portal"
+        admin.site.index_title = "Welcome to SHIVA Researcher Portal"
+
+3) Create Models
+    a) go to 'models.py' (into app) and create a model class (eg. Contact)
+    b) create model colomns into that class
+
+4) Register Models to admin.py, so that these modules can be accessable in admin panel (load the models)
+    a) go to 'admin.py' (into APP's) and IMPORT APP's model classes (eg. Contact) -> 'from myapp.models import Contact'
+    b) now, REGISTER imported model -> admin.site.register(Contact)
+
+5) Add created APP's config to PROJECT's settings.py
+    a) go to apps.py (into APP's) and get the APP's class name eg-> MyappConfig
+    b) now, put the config name into PROJECT's settings.py in INSTALLED_APPS block, eg-> 'myapp.apps.MyappConfig',
+
+
+6) Load Model to view
+    from home.models import Contact
+
+7) Prompt message on form submit
+    a) need to import below message library in settings.py (APP's)
+        from django.contrib.messages import constants as messages
+
+    b) import another library in views.py (APP's)
+        from django.contrib import messages    
+
+        
+----------------------------------------------- DATABASE RELATED STUFFS -------------------------------------
+1) Put postgresql server credentials into settings.py (PROJECT's) ie. host, user, password, name (dbname) in DATABASES block.
+
+2) Need to install psycopg2 for db connectivity between django AND postgresql
+    a) pip install psycopg2
+
+3) Image uploading library is 'Pillow', need to be installed
+    a) pip install pillow
+
+4) Create tables automatically
+    a) create models class and colomn names with datatypes
+    b) makemigrations
+    c) after making migrations, it will give a file, hit below command with that file name (with name's numbers)
+        i) python manage.py sqlmigrate yourappname 0002(filenumber)
+    d) now, migrate (now, go to tables and refresh and table is created)
+
+
+--------------------------------------------- IMAGE UPLOADING STUFFS -----------------------------------------------
+1) First, need to add MEDIA URL & MEDIA ROOT dir into settings.py (PROJECT's) (media uploading folder name)
+    a) MEDIA_URL = '/anyfoldername/' (MEDIA_URL setting must end with a slash.)
+    b) MEDIA_ROOT = os.path.join(BASE_DIR, 'anyfoldername')
+
+2)  Now, need to add MEDIA_URL & MEDIA_ROOT into urls.py (PROJECT's)
+    a) first import settings & static library into urls.py (PROJECT's), run below commands ->if not imported
+        i)   from django.conf import settings
+        ii)  from django.conf.urls.static import static
+
+    b) add MEDIA_URL & MEDIA_ROOT, use below command
+        urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+------------------------------------ REGISTER MULTIPLE MODELS INTO ADMIN --------------------------------  
+** Whichever models registeres into admin.py (APP's), it will show in admin panel    
+
+1) Register Multiple models
+    a) First, Load the models (from model import model1)
+    myModels = [Model1, Model2]
+    admin.site.register(myModels)
+
+
+------------------------------------ DJANGO FRAMEWORK ------------------------------------------------
+1) Install Django Framework
+    pip install djangorestframework
+
+2) Add django Framework to install app in settings.py (PROJECT's)
+    rest_framework    
+
+3) Create a "serializers.py" into APP's folder -> it basically use to create apis and give response into json format
+    a) make a serializers CLASS eg -> class teamSerializers(serializers.ModelSerializer):
+    b) add a model -> where api has be created from.
+    c) set fields (api colomns)    
+    
+4) Create a function in "views.py" and call serializers and define API work.   
